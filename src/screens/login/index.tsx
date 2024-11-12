@@ -6,9 +6,6 @@ import auth from '@react-native-firebase/auth';
 // import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
 const Login = () => {
-    // GoogleSignin.configure({
-    //     webClientId: '885477659428-j5mfkace6jmpigrjiimt9k3kdijmsm6h.apps.googleusercontent.com'
-    // })
 
     // const onGoogleSignin = async () => {
     //     // Check if your device supports Google Play
