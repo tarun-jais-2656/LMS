@@ -1,18 +1,38 @@
-import React from "react";
-import { Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import React, { useState } from "react";
+import { Alert, Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { icon } from "../../assets/icons";
 import { useNavigation } from "@react-navigation/native";
+import auth from '@react-native-firebase/auth';
 
 
-const SignUp=()=>{
-    const navigation=useNavigation();
-    const handleNav=()=>{
+const SignUp = () => {
+    const [email, setEmail] = useState('');
+    const [pass, setPass] = useState('');
+
+    const navigation = useNavigation();
+    const handleNav = () => {
         navigation.navigate('Login');
     }
-    const handleNavOtp=()=>{
+    const handleNavOtp = () => {
         navigation.navigate('Otp');
     }
-    return(
+
+    const onRegister = () => {
+        auth().createUserWithEmailAndPassword(email, pass)
+            .then(() => {
+                Alert.alert('User account created.');
+            }).catch(error => {
+                if (error.code === 'auth/email-already-in-use') {
+                    Alert.alert('That email address is already in use!');
+                }
+                if (error.code === 'auth/invalid-email') {
+                    Alert.alert('That email address is invalid!');
+                }
+            })
+
+    }
+
+    return (
         <SafeAreaView>
             <View style={styles.imgView}>
                 <Image
@@ -40,6 +60,8 @@ const SignUp=()=>{
                 <TextInput
                     placeholder="Enter your email"
                     style={styles.textInput}
+                    value={email}
+                    onChangeText={value => setEmail(value)}
                 />
             </View>
             <View style={styles.passView}>
@@ -52,6 +74,8 @@ const SignUp=()=>{
                         placeholder="Enter your password"
                         style={styles.textInput}
                         numberOfLines={1}
+                        value={pass}
+                        onChangeText={value => setPass(value)}
                     />
                 </View>
                 <Image
@@ -59,8 +83,8 @@ const SignUp=()=>{
                     style={styles.eye}
                 />
             </View>
-            <TouchableOpacity style={styles.btn} onPress={handleNavOtp}>
-                <Text style={styles.btntxt}>Sign In</Text>
+            <TouchableOpacity style={styles.btn} onPress={onRegister}>
+                <Text style={styles.btntxt}>Sign Up</Text>
             </TouchableOpacity>
             <View style={styles.logoView}>
                 <View style={styles.logoSubView}>
@@ -86,7 +110,7 @@ const SignUp=()=>{
 
 export default SignUp;
 
-const styles=StyleSheet.create({
+const styles = StyleSheet.create({
     imgView: {
         alignItems: 'center'
     },
@@ -160,13 +184,13 @@ const styles=StyleSheet.create({
     logoSubView: {
         flexDirection: 'row'
     },
-    txtMainView:{
-        alignItems:'center'
+    txtMainView: {
+        alignItems: 'center'
     },
     txtView: {
         flexDirection: 'row'
     },
-    txtColor:{
-        color:'#51a6f5'
+    txtColor: {
+        color: '#51a6f5'
     }
 })

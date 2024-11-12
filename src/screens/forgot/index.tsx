@@ -16,7 +16,7 @@ export default function Forgot() {
     return (
         <View style={styles.container}>
             <Image
-                source={icon.otp}
+                source={icon.forgot}
                 style={styles.otp}
             />
             <Text style={styles.txt}>Reset email password</Text>

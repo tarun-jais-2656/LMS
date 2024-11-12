@@ -1,17 +1,54 @@
-import React from "react";
-import { Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import React, { useState } from "react";
+import { Alert, Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { icon } from "../../assets/icons";
 import { useNavigation } from "@react-navigation/native";
+import auth from '@react-native-firebase/auth';
+// import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
 const Login = () => {
-    const navigation=useNavigation();
-    const handleNav=()=>{
+    // GoogleSignin.configure({
+    //     webClientId: '885477659428-j5mfkace6jmpigrjiimt9k3kdijmsm6h.apps.googleusercontent.com'
+    // })
+
+    // const onGoogleSignin = async () => {
+    //     // Check if your device supports Google Play
+    //     await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+    //     // Get the users ID token
+    //     const { idToken } = await GoogleSignin.signIn();
+
+    //     // Create a Google credential with the token
+    //     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+    //     // Sign-in the user with the credential
+    //     return auth().signInWithCredential(googleCredential);
+    // }
+
+    const [email, setEmail] = useState('');
+    const [pass, setPass] = useState('');
+    const navigation = useNavigation();
+    const handleNav = () => {
         navigation.navigate('SignUp');
     }
-    const handleNavForgot=()=>{
+    const handleNavForgot = () => {
         navigation.navigate('Forgot');
     }
-    
+
+    const onLogin = () => {
+        auth().signInWithEmailAndPassword(email, pass)
+            .then(response => {
+                Alert.alert('Login successfully!')
+            })
+            .catch(error => {
+                console.log(error)
+                if (error.code === 'auth/wrong-password') {
+                    Alert.alert('Password is incorrect!')
+                }
+                else if (error.code === 'auth/invalid-credential') {
+                    Alert.alert('Invalid credentials!')
+                }
+            })
+    }
+
 
     return (
         <SafeAreaView style={styles.container}>
@@ -31,6 +68,8 @@ const Login = () => {
                 <TextInput
                     placeholder="Enter your email"
                     style={styles.textInput}
+                    value={email}
+                    onChangeText={value => setEmail(value)}
                 />
             </View>
             <View style={styles.passView}>
@@ -43,6 +82,8 @@ const Login = () => {
                         placeholder="Enter your password"
                         style={styles.textInput}
                         numberOfLines={1}
+                        value={pass}
+                        onChangeText={value => setPass(value)}
                     />
                 </View>
                 <Image
@@ -53,19 +94,23 @@ const Login = () => {
             <View style={styles.forgotView}>
                 <Text style={styles.forgotTxt} onPress={handleNavForgot}>Forgot password</Text>
             </View>
-            <TouchableOpacity style={styles.btn}>
+            <TouchableOpacity style={styles.btn} onPress={onLogin}>
                 <Text style={styles.btntxt}>Sign In</Text>
             </TouchableOpacity>
             <View style={styles.logoView}>
                 <View style={styles.logoSubView}>
-                    <Image
-                        source={icon.google}
-                        style={styles.logo}
-                    />
-                    <Image
-                        source={icon.github}
-                        style={styles.logo}
-                    />
+                    <TouchableOpacity>
+                        <Image
+                            source={icon.google}
+                            style={styles.logo}
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                        <Image
+                            source={icon.github}
+                            style={styles.logo}
+                        />
+                    </TouchableOpacity>
                 </View>
             </View>
             <View style={styles.txtMainView}>
@@ -167,13 +212,13 @@ const styles = StyleSheet.create({
     logoSubView: {
         flexDirection: 'row'
     },
-    txtMainView:{
-        alignItems:'center'
+    txtMainView: {
+        alignItems: 'center'
     },
     txtView: {
         flexDirection: 'row'
     },
-    txtColor:{
-        color:'#51a6f5'
+    txtColor: {
+        color: '#51a6f5'
     }
 })
